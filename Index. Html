@@ -1,206 +1,163 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#07111f">
-  <title>CyberSentinel AI</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      padding: 20px;
-      background: #07111f;
-      color: #eaf6ff;
-      font-family: Arial, sans-serif;
-    }
-    .container { max-width: 700px; margin: auto; }
-    header {
-      text-align: center;
-      padding: 22px 10px;
-      border-bottom: 1px solid #17415a;
-    }
-    h1 { color: #31e6ff; margin-bottom: 8px; }
-    .subtitle { color: #9ab5c8; }
-    .badge {
-      display: inline-block;
-      padding: 6px 12px;
-      background: #103342;
-      color: #50f5d0;
-      border-radius: 20px;
-      font-size: 12px;
-    }
-    .card {
-      background: #101e30;
-      border: 1px solid #203b52;
-      border-radius: 14px;
-      padding: 18px;
-      margin-top: 18px;
-    }
-    textarea {
-      width: 100%;
-      min-height: 160px;
-      background: #07111f;
-      color: white;
-      border: 1px solid #31536a;
-      border-radius: 8px;
-      padding: 12px;
-      resize: vertical;
-    }
-    button {
-      background: #16c9df;
-      color: #06121d;
-      border: 0;
-      padding: 12px 16px;
-      margin: 8px 5px 0 0;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    .secondary { background: #253e53; color: white; }
-    .result { white-space: pre-wrap; line-height: 1.6; overflow-wrap: anywhere; }
-    .note { font-size: 13px; color: #9ab5c8; line-height: 1.5; }
-    footer { text-align: center; color: #7894a9; font-size: 12px; margin: 25px 0; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07111f">
+<title>CyberSentinel AI</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#07111f;color:#edf7ff;font-family:Arial,sans-serif;padding:18px}
+main{max-width:800px;margin:auto}
+header{text-align:center;padding:22px 5px}
+h1{color:#35e5ff;margin-bottom:8px}
+.muted{color:#9bb2c7;font-size:14px;line-height:1.5}
+.badge{display:inline-block;background:#123b43;color:#63f5cf;padding:7px 12px;border-radius:20px;font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:#101e30;border:1px solid #234158;border-radius:14px;padding:16px;margin:12px 0}
+.label{font-size:13px;color:#a9bfd0}
+.value{font-size:25px;font-weight:bold;margin-top:10px}
+.cyan{color:#35e5ff}.green{color:#63f5cf}.yellow{color:#ffd166}
+button{background:#22d3e6;color:#06121d;border:0;border-radius:8px;padding:12px 15px;font-weight:bold;margin:6px 4px 4px 0}
+textarea{width:100%;min-height:150px;background:#07111f;color:#edf7ff;border:1px solid #34536b;border-radius:9px;padding:12px;font-size:14px}
+.result{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6}
+li{margin:10px 0;line-height:1.5}
+footer{text-align:center;color:#829caf;font-size:12px;padding:22px 0}
+@media(max-width:360px){body{padding:10px}.card{padding:12px}}
+</style>
 </head>
 <body>
-<div class="container">
-  <header>
-    <div class="badge">CYBERSECURITY • INCIDENT RESPONSE</div>
-    <h1>🛡️ CyberSentinel AI</h1>
-    <p class="subtitle">Your Security Incident Analysis Dashboard</p>
-  </header>
+<main>
+<header>
+<div class="badge">CYBERSECURITY • DFIR</div>
+<h1>🛡️ CyberSentinel AI</h1>
+<p class="muted">Security Operations & Incident Response Dashboard</p>
+</header>
 
-  <section class="card">
-    <h2>📊 Security Log Analyzer</h2>
-    <p class="note">Paste a security log below to check for suspicious indicators.</p>
-    <textarea id="logs" placeholder="Paste authorized security logs here..."></textarea>
-    <br>
-    <button onclick="analyzeLogs()">Analyze Logs</button>
-    <button class="secondary" onclick="clearLogs()">Clear</button>
-  </section>
-
-  <section class="card">
-    <h2>🔎 Analysis Report</h2>
-    <div id="result" class="result">Waiting for log analysis...</div>
-    <button id="downloadBtn" onclick="downloadReport()" hidden>Download Report</button>
-  </section>
-
-  <section class="card">
-    <h3>⚠️ Important Notice</h3>
-    <p class="note">
-      This is an educational prototype using basic pattern matching, not a
-      validated AI security system. Findings are indicators, not proof of an
-      attack. It does not scan your phone, block threats, or delete files.
-      Analyze only logs you are authorized to access.
-    </p>
-  </section>
-  <footer>CyberSentinel AI • Student Project Prototype</footer>
+<div class="grid">
+<div class="card">
+<div class="label">SYSTEM STATUS</div>
+<div class="value green">● READY</div>
+<p class="muted">Analyzer available</p>
+</div>
+<div class="card">
+<div class="label">ANALYSIS MODE</div>
+<div class="value cyan">LOG SCAN</div>
+<p class="muted">Local text analysis</p>
+</div>
+<div class="card">
+<div class="label">INDICATORS FOUND</div>
+<div class="value yellow" id="count">0</div>
+<p class="muted">In latest analysis</p>
+</div>
+<div class="card">
+<div class="label">RISK LEVEL</div>
+<div class="value green" id="risk">NONE</div>
+<p class="muted">Preliminary assessment</p>
+</div>
 </div>
 
+<section class="card">
+<h2>🔍 Security Log Analyzer</h2>
+<p class="muted">Paste authorized security logs. The analyzer checks for selected suspicious text patterns.</p>
+<textarea id="logs" placeholder="Example: Failed login for user test from unknown host"></textarea>
+<br>
+<button onclick="analyze()">Analyze Logs</button>
+<button onclick="clearAll()" style="background:#2b4054;color:white">Clear</button>
+</section>
+
+<section class="card">
+<h2>📊 Analysis Report</h2>
+<div id="report" class="result muted">Waiting for analysis...</div>
+<button id="download" onclick="downloadReport()" hidden>Download Report</button>
+</section>
+
+<section class="card">
+<h2>🧭 Incident Response Checklist</h2>
+<ul>
+<li>Preserve relevant logs and record their source and collection time.</li>
+<li>Verify alerts against trusted system and security records.</li>
+<li>Document actions taken and maintain evidence integrity.</li>
+<li>Escalate confirmed incidents to an authorized security professional.</li>
+</ul>
+</section>
+
+<section class="card">
+<h3>⚠️ Prototype Notice</h3>
+<p class="muted">This is an educational rule-based prototype, not a validated AI or antivirus product. It does not scan your phone, connect to a SOC, block threats, or prove that an attack occurred. Analyze only logs you are authorized to review. Avoid pasting passwords, tokens, personal data, or confidential logs.</p>
+</section>
+<footer>CyberSentinel AI • Student DFIR Project</footer>
+</main>
+
 <script>
-let lastReport = "";
+let savedReport = "";
 
-function analyzeLogs() {
-  const logs = document.getElementById("logs").value.trim();
-  const result = document.getElementById("result");
-  const downloadBtn = document.getElementById("downloadBtn");
+function analyze(){
+ const text = document.getElementById("logs").value.trim();
+ const out = document.getElementById("report");
+ if(!text){
+  out.textContent = "Please enter security log text first.";
+  return;
+ }
+ const rules = [
+  ["Failed login / authentication issue", /failed login|login failed|authentication failure|invalid password/ig],
+  ["Possible privilege-related activity", /privilege escalation|sudo|administrator privileges|root access/ig],
+  ["Possible malware alert", /ransomware|keylogger|trojan|malware detected/ig],
+  ["Script or encoded-command keyword", /encodedcommand|powershell|base64|bash -c/ig],
+  ["Security control disabled", /antivirus disabled|firewall disabled|protection turned off/ig],
+  ["Unusual network activity keyword", /unusual outbound connection|connection to unknown host|suspicious outbound/ig]
+ ];
+ const found = [];
+ for(const [name, pattern] of rules){
+  const matches = text.match(pattern);
+  if(matches) found.push({name:name,count:matches.length});
+ }
+ let level = "NONE";
+ if(found.length >= 3) level = "HIGH";
+ else if(found.length >= 1) level = "MEDIUM";
 
-  if (!logs) {
-    result.textContent = "Please paste some security logs first.";
-    downloadBtn.hidden = true;
-    return;
-  }
+ document.getElementById("count").textContent = found.length;
+ const risk = document.getElementById("risk");
+ risk.textContent = level;
+ risk.className = "value " + (level === "HIGH" ? "yellow" : level === "MEDIUM" ? "yellow" : "green");
 
-  const checks = [
-    {
-      name: "Repeated failed login attempts",
-      pattern: /failed login|login failed|authentication failure|invalid password/ig,
-      advice: "Review login records and verify whether the attempts were authorized."
-    },
-    {
-      name: "Possible privilege escalation",
-      pattern: /privilege escalation|sudo|administrator privileges|root access/ig,
-      advice: "Verify account permissions and confirm whether the activity was expected."
-    },
-    {
-      name: "Possible malware indicator",
-      pattern: /ransomware|keylogger|trojan|malware detected/ig,
-      advice: "Review the alert with trusted security software and preserve relevant logs."
-    },
-    {
-      name: "Suspicious script or encoded command",
-      pattern: /encodedcommand|powershell|base64|bash -c/ig,
-      advice: "Check the full command and its context; these terms can also occur in legitimate activity."
-    },
-    {
-      name: "Security control may be disabled",
-      pattern: /antivirus disabled|firewall disabled|protection turned off/ig,
-      advice: "Verify the security control's current status and review who changed it."
-    },
-    {
-      name: "Potentially unusual network activity",
-      pattern: /unusual outbound connection|connection to unknown host|suspicious outbound/ig,
-      advice: "Review destination, timestamp, process, and network records."
-    }
-  ];
-
-  let findings = [];
-  checks.forEach(check => {
-    const matches = logs.match(check.pattern);
-    if (matches) {
-      findings.push({
-        name: check.name,
-        count: matches.length,
-        advice: check.advice
-      });
-    }
+ let report = "CYBERSENTINEL AI — PRELIMINARY REPORT\n";
+ report += "Time: " + new Date().toLocaleString() + "\n";
+ report += "Rule-based indicator count: " + found.length + "\n";
+ report += "Preliminary level: " + level + "\n\n";
+ if(!found.length){
+  report += "No matching indicators found by these rules.\nThis does not prove the system is safe.";
+ } else {
+  found.forEach((item,i)=>{
+   report += (i+1)+". "+item.name+" (matches: "+item.count+")\n";
   });
-
-  let risk = "LOW";
-  if (findings.length >= 3) risk = "HIGH";
-  else if (findings.length >= 1) risk = "MEDIUM";
-
-  let report = "CYBERSENTINEL AI — LOG ANALYSIS REPORT\n";
-  report += "Date: " + new Date().toLocaleString() + "\n";
-  report += "Preliminary indicator level: " + risk + "\n\n";
-
-  if (findings.length === 0) {
-    report += "No indicators matching the current rules were found.\n";
-    report += "This does not prove that the system is safe.\n";
-  } else {
-    report += "Potential indicators found: " + findings.length + "\n\n";
-    findings.forEach((f, i) => {
-      report += (i + 1) + ". " + f.name + "\n";
-      report += "   Matching entries: " + f.count + "\n";
-      report += "   Suggested review: " + f.advice + "\n\n";
-    });
-  }
-
-  report += "\nLimitations: Basic pattern matching only; not a validated AI diagnosis.";
-  report += "\nTreat results as preliminary and verify them before taking action.";
-
-  lastReport = report;
-  result.textContent = report;
-  downloadBtn.hidden = false;
+  report += "\nReview the original logs and verify each finding.";
+ }
+ report += "\n\nLimitations: Pattern matching only; findings are not proof of compromise.";
+ savedReport = report;
+ out.textContent = report;
+ document.getElementById("download").hidden = false;
 }
 
-function clearLogs() {
-  document.getElementById("logs").value = "";
-  document.getElementById("result").textContent = "Waiting for log analysis...";
-  document.getElementById("downloadBtn").hidden = true;
-  lastReport = "";
+function clearAll(){
+ document.getElementById("logs").value = "";
+ document.getElementById("report").textContent = "Waiting for analysis...";
+ document.getElementById("count").textContent = "0";
+ document.getElementById("risk").textContent = "NONE";
+ document.getElementById("risk").className = "value green";
+ document.getElementById("download").hidden = true;
+ savedReport = "";
 }
 
-function downloadReport() {
-  if (!lastReport) return;
-  const blob = new Blob([lastReport], {type: "text/plain;charset=utf-8"});
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "CyberSentinel-Incident-Report.txt";
-  link.click();
-  URL.revokeObjectURL(url);
+function downloadReport(){
+ if(!savedReport) return;
+ const blob = new Blob([savedReport],{type:"text/plain;charset=utf-8"});
+ const url = URL.createObjectURL(blob);
+ const a = document.createElement("a");
+ a.href = url;
+ a.download = "CyberSentinel-Incident-Report.txt";
+ a.click();
+ URL.revokeObjectURL(url);
 }
 </script>
 </body>
