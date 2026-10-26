@@ -46,3 +46,23 @@ Tushar Shirsath
 ⚠️ Disclaimer
 
 This project is designed for learning, security awareness, and defensive log analysis. Its findings are indicative and should be verified before taking action.
+
+🧪 Test Cases
+
+The following test cases are intended to verify the dashboard's basic log-analysis behavior.
+
+Test ID| Sample Input| Expected Result
+TC-01| Normal login successful| Low risk or no suspicious indicator
+TC-02| Multiple failed login attempts| Suspicious login pattern may be flagged
+TC-03| Sample SQL injection indicator in a log| Potential SQL injection indicator may be flagged
+TC-04| Sample cross-site scripting (XSS) indicator| Potential XSS indicator may be flagged
+TC-05| Empty input| Helpful validation message or no findings
+TC-06| Clear button| Input and results should clear, if supported
+TC-07| Export report| A report should download, if supported
+
+Test Notes
+
+- Run each test in the dashboard and record the actual result.
+- Mark a test as PASS only when the observed result matches the expected result.
+- These tests use sample inputs and do not establish that the tool detects every real-world attack.
+- Risk classifications are heuristic indicators, not proof of malicious activity.
