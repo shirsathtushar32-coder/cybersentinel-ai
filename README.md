@@ -66,3 +66,51 @@ Test Notes
 - Mark a test as PASS only when the observed result matches the expected result.
 - These tests use sample inputs and do not establish that the tool detects every real-world attack.
 - Risk classifications are heuristic indicators, not proof of malicious activity.
+🏗️ System Architecture
+
+CyberSentinel AI is a browser-based educational prototype built using HTML, CSS, and JavaScript.
+
+          USER
+           |
+           v
+    WEB DASHBOARD
+      (HTML + CSS)
+           |
+           v
+    LOG INPUT / SAMPLE
+           |
+           v
+  JAVASCRIPT RULE ENGINE
+           |
+           v
+  SUSPICIOUS PATTERN CHECK
+           |
+           v
+      RISK ASSESSMENT
+     LOW / MEDIUM / HIGH
+           |
+           v
+   INCIDENT RESPONSE TIPS
+           |
+           v
+    RESULTS / TXT REPORT
+
+🔄 Workflow
+
+1. The user enters or selects a sample security log.
+2. JavaScript checks the input against predefined detection rules.
+3. The dashboard displays any matching suspicious indicators.
+4. A heuristic risk level is calculated.
+5. The dashboard provides relevant defensive recommendations.
+6. If supported, the user can export the results as a text report.
+
+⚙️ Processing Model
+
+- Input: User-provided or sample log text.
+- Processing: Client-side JavaScript rule matching.
+- Output: Detected indicators, estimated risk, and recommendations.
+- Hosting: GitHub Pages.
+
+⚠️ Limitations
+
+This prototype does not independently monitor devices, access live network traffic, or guarantee detection of attacks. Results depend on the rules implemented in the current version.
