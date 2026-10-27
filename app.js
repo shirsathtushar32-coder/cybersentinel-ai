@@ -1,4 +1,3 @@
-a
 "use strict";
 
 document.addEventListener("DOMContentLoaded", () => {
