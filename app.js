@@ -1,138 +1,132 @@
 "use strict";
 
-document.addEventListener("DOMContentLoaded", () => {
-const logInput = document.querySelector("#logInput");
-const scanButton = document.querySelector("#scanButton");
-const clearButton = document.querySelector("#clearButton");
-const results = document.querySelector("#results");
+let latestReport = "";
 
-// Stop safely if the existing HTML uses different element IDs.
-if (!logInput || !scanButton || !results) {
-console.info(
-"CyberSentinel AI: HTML element IDs need to match app.js."
-);
-return;
-}
+function loadSample() {
+  document.getElementById("logs").value =
+`2026-10-27 10:15:02 Failed login attempt from unknown IP
+2026-10-27 10:15:05 Failed password for test account`;
 
-const rules = [
-{
-name: "Repeated failed login",
-pattern: /failed login|login failed|authentication failure/gi,
-risk: "MEDIUM",
-advice: "Review authentication logs and verify whether the attempts are legitimate."
-},
-{
-name: "Possible SQL injection indicator",
-pattern: /union\s+select|'\sor\s+'?1'?\s=\s*'?1|select\s+*\s+from/gi,
-risk: "HIGH",
-advice: "Review the relevant request and application logs; validate input handling."
-},
-{
-name: "Possible XSS indicator",
-pattern: /<script\b|javascript\s*:/gi,
-risk: "HIGH",
-advice: "Inspect the input and confirm that output encoding and input validation are applied."
-},
-{
-name: "Possible path traversal indicator",
-pattern: /..//g,
-risk: "MEDIUM",
-advice: "Check file access logs and ensure paths are restricted to permitted directories."
-},
-{
-name: "Possible privilege change",
-pattern: /privilege escalation|unauthorized admin|permission denied/gi,
-risk: "MEDIUM",
-advice: "Review account permissions and relevant audit events."
+  scanLogs();
 }
-];
 
 function scanLogs() {
-const text = logInput.value;
-results.replaceChildren();
+  const raw = document.getElementById("logs").value.trim();
 
-if (!text.trim()) {
-  results.textContent = "Please enter a sample log before scanning.";
-  return;
-}
-
-const findings = [];
-
-for (const rule of rules) {
-  rule.pattern.lastIndex = 0;
-  const matches = text.match(rule.pattern);
-
-  if (matches) {
-    findings.push({
-      name: rule.name,
-      count: matches.length,
-      risk: rule.risk,
-      advice: rule.advice
-    });
+  if (!raw) {
+    alert("Please enter a log sample or click LOAD SAMPLE.");
+    return;
   }
+
+  const text = raw.toLowerCase();
+  const lines = raw.split(/\r?\n/).filter(line => line.trim());
+
+  const rules = [
+    {
+      name: "Repeated or failed login indicator",
+      patterns: ["failed login", "failed password", "login failed"]
+    },
+    {
+      name: "Possible SQL injection indicator",
+      patterns: ["union select", "sql injection"]
+    },
+    {
+      name: "Possible XSS indicator",
+      patterns: ["<script", "javascript:"]
+    },
+    {
+      name: "Possible path traversal indicator",
+      patterns: ["../", "..\\"]
+    },
+    {
+      name: "Possible privilege escalation indicator",
+      patterns: ["privilege escalation", "unauthorized admin"]
+    }
+  ];
+
+  const findings = rules.filter(rule =>
+    rule.patterns.some(pattern => text.includes(pattern))
+  );
+
+  let risk = "LOW";
+  let color = "#4ade80";
+
+  if (findings.length >= 2) {
+    risk = "HIGH";
+    color = "#fb7185";
+  } else if (findings.length === 1) {
+    risk = "MEDIUM";
+    color = "#facc15";
+  }
+
+  const report = [
+    "CYBERSENTINEL AI — SCAN REPORT",
+    "================================",
+    "Time: " + new Date().toLocaleString(),
+    "Risk level: " + risk,
+    "Log lines: " + lines.length,
+    "Indicators: " + findings.length,
+    "",
+    "FINDINGS",
+    "--------------------------------",
+    ...(findings.length
+      ? findings.map((item, i) => `${i + 1}. ${item.name}`)
+      : ["No configured indicators detected."]),
+    "",
+    "LIMITATIONS",
+    "This is an educational, rule-based demonstration.",
+    "Text matches do not prove an attack occurred.",
+    "A LOW result does not prove a system is safe."
+  ].join("\n");
+
+  document.getElementById("risk").textContent = "RISK: " + risk;
+  document.getElementById("risk").style.color = color;
+  document.getElementById("summary").textContent =
+    findings.length + " configured indicator type(s) detected.";
+
+  document.getElementById("metricRisk").textContent = risk;
+  document.getElementById("metricRisk").style.color = color;
+  document.getElementById("metricLines").textContent = lines.length;
+  document.getElementById("metricFindings").textContent = findings.length;
+  document.getElementById("report").textContent = report;
+
+  latestReport = report;
 }
 
-let overallRisk = "LOW";
+function downloadReport() {
+  if (!latestReport) {
+    alert("Run a scan first.");
+    return;
+  }
 
-if (findings.some(item => item.risk === "HIGH")) {
-  overallRisk = "HIGH";
-} else if (findings.some(item => item.risk === "MEDIUM")) {
-  overallRisk = "MEDIUM";
+  const blob = new Blob([latestReport], {
+    type: "text/plain;charset=utf-8"
+  });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+
+  link.href = url;
+  link.download = "CyberSentinel_Report.txt";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-const heading = document.createElement("h3");
-heading.textContent = "Scan Results";
-results.appendChild(heading);
+function clearAll() {
+  document.getElementById("logs").value = "";
+  document.getElementById("risk").textContent = "NOT SCANNED";
+  document.getElementById("risk").style.color = "#22d3ee";
+  document.getElementById("summary").textContent =
+    "Load a sample or enter a log and run a scan.";
+  document.getElementById("metricRisk").textContent = "—";
+  document.getElementById("metricRisk").style.color = "";
+  document.getElementById("metricLines").textContent = "0";
+  document.getElementById("metricFindings").textContent = "0";
+  document.getElementById("report").textContent =
+    "Your findings will appear here.";
 
-const risk = document.createElement("p");
-risk.textContent = `Heuristic risk level: ${overallRisk}`;
-risk.className = overallRisk.toLowerCase();
-results.appendChild(risk);
-
-const total = document.createElement("p");
-total.textContent = `Indicators found: ${findings.length}`;
-results.appendChild(total);
-
-if (findings.length === 0) {
-  const message = document.createElement("p");
-  message.textContent =
-    "No configured indicators matched. This does not prove the log is safe.";
-  results.appendChild(message);
+  latestReport = "";
 }
-
-for (const finding of findings) {
-  const card = document.createElement("section");
-  card.className = "metric";
-
-  const title = document.createElement("h4");
-  title.textContent = finding.name;
-  card.appendChild(title);
-
-  const level = document.createElement("p");
-  level.textContent = `Risk: ${finding.risk} | Matches: ${finding.count}`;
-  level.className = finding.risk.toLowerCase();
-  card.appendChild(level);
-
-  const advice = document.createElement("p");
-  advice.textContent = finding.advice;
-  card.appendChild(advice);
-
-  results.appendChild(card);
-}
-
-const disclaimer = document.createElement("p");
-disclaimer.textContent =
-  "Educational heuristic only. Verify findings before taking action.";
-results.appendChild(disclaimer);
-
-}
-
-scanButton.addEventListener("click", scanLogs);
-
-if (clearButton) {
-clearButton.addEventListener("click", () => {
-logInput.value = "";
-results.replaceChildren();
-});
-}
-});
