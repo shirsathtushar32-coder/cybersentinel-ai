@@ -9,7 +9,6 @@ function loadSample() {
 
   scanLogs();
 }
-
 function scanLogs() {
   const raw = document.getElementById("logs").value.trim();
 
@@ -18,12 +17,11 @@ function scanLogs() {
     return;
   }
 
-  const text = raw.toLowerCase();
   const lines = raw.split(/\r?\n/).filter(line => line.trim());
 
   const rules = [
     {
-      name: "Repeated or failed login indicator",
+      name: "Failed login indicator",
       patterns: ["failed login", "failed password", "login failed"]
     },
     {
@@ -44,9 +42,27 @@ function scanLogs() {
     }
   ];
 
-  const findings = rules.filter(rule =>
-    rule.patterns.some(pattern => text.includes(pattern))
-  );
+  const details = [];
+
+  lines.forEach((line, index) => {
+    const lowerLine = line.toLowerCase();
+
+    rules.forEach(rule => {
+      const matched = rule.patterns.some(pattern =>
+        lowerLine.includes(pattern)
+      );
+
+      if (matched) {
+        details.push({
+          lineNumber: index + 1,
+          ruleName: rule.name,
+          logLine: line
+        });
+      }
+    });
+  });
+
+  const findings = [...new Set(details.map(item => item.ruleName))];
 
   let risk = "LOW";
   let color = "#4ade80";
@@ -65,68 +81,32 @@ function scanLogs() {
     "Time: " + new Date().toLocaleString(),
     "Risk level: " + risk,
     "Log lines: " + lines.length,
-    "Indicators: " + findings.length,
+    "Indicator types: " + findings.length,
     "",
-    "FINDINGS",
+    "FINDING DETAILS",
     "--------------------------------",
-    ...(findings.length
-      ? findings.map((item, i) => `${i + 1}. ${item.name}`)
+    ...(details.length
+      ? details.map(item =>
+          `Line ${item.lineNumber}: ${item.ruleName}\nLog: ${item.logLine}`
+        )
       : ["No configured indicators detected."]),
     "",
     "LIMITATIONS",
-    "This is an educational, rule-based demonstration.",
-    "Text matches do not prove an attack occurred.",
-    "A LOW result does not prove a system is safe."
+    "Educational rule-based demonstration only.",
+    "A matching line does not prove an attack occurred.",
+    "LOW risk does not prove a system is safe."
   ].join("\n");
 
   document.getElementById("risk").textContent = "RISK: " + risk;
   document.getElementById("risk").style.color = color;
   document.getElementById("summary").textContent =
-    findings.length + " configured indicator type(s) detected.";
+    details.length + " matching log line(s) found.";
 
   document.getElementById("metricRisk").textContent = risk;
   document.getElementById("metricRisk").style.color = color;
   document.getElementById("metricLines").textContent = lines.length;
-  document.getElementById("metricFindings").textContent = findings.length;
+  document.getElementById("metricFindings").textContent = details.length;
   document.getElementById("report").textContent = report;
 
   latestReport = report;
-}
-
-function downloadReport() {
-  if (!latestReport) {
-    alert("Run a scan first.");
-    return;
-  }
-
-  const blob = new Blob([latestReport], {
-    type: "text/plain;charset=utf-8"
-  });
-
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-
-  link.href = url;
-  link.download = "CyberSentinel_Report.txt";
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
-function clearAll() {
-  document.getElementById("logs").value = "";
-  document.getElementById("risk").textContent = "NOT SCANNED";
-  document.getElementById("risk").style.color = "#22d3ee";
-  document.getElementById("summary").textContent =
-    "Load a sample or enter a log and run a scan.";
-  document.getElementById("metricRisk").textContent = "—";
-  document.getElementById("metricRisk").style.color = "";
-  document.getElementById("metricLines").textContent = "0";
-  document.getElementById("metricFindings").textContent = "0";
-  document.getElementById("report").textContent =
-    "Your findings will appear here.";
-
-  latestReport = "";
 }
