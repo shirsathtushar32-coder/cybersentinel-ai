@@ -1,107 +1,85 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<link rel="stylesheet" href="styles.css">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CyberSentinel AI</title>
-
-<style><link rel="stylesheet" href="styles.css">
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#08111f">
+  <title>CyberSentinel // Security Log Triage & IR Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="CyberSentinel home"><span class="brand-mark">C</span><span>CyberSentinel<span class="brand-ai"> AI</span></span></a>
+    <div class="top-meta"><span class="pill"><span class="dot"></span> 100% LOCAL / ZERO EXFILTRATION</span><span class="version">HEURISTIC v2.0</span></div>
+  </header>
 
-<header>
-  <div class="logo">🛡 CyberSentinel AI</div>
-  <div class="badge">HEURISTIC SCANNER v1.0</div>
-</header>
-
-<main>
-  <section class="hero">
-    <h1>Security Operations Dashboard</h1>
-    <p>Analyze security log samples, review suspicious indicators,
-    and organize incident response steps.</p>
-  </section>
-
-  <section class="metrics">
-    <div class="metric">
-      <span class="small">ASSESSED RISK</span>
-      <strong id="metricRisk">—</strong>
-    </div>
-    <div class="metric">
-      <span class="small">LOG LINES</span>
-      <strong id="metricLines">0</strong>
-    </div>
-    <div class="metric">
-      <span class="small">INDICATORS</span>
-      <strong id="metricFindings">0</strong>
-    </div>
-  </section>
-
-  <section class="grid">
-    <div class="card">
-      <h2>🔎 Security Log Analyzer</h2>
-      <p>Paste a log sample below or load a built-in demonstration.</p>
-
-      <textarea id="logs" spellcheck="false"
-        placeholder="Paste your security log sample here..."></textarea>
-
+  <main class="container">
+    <section class="hero">
       <div>
-        <button class="primary" onclick="scanLogs()">RUN SCAN</button>
-        <button class="secondary" onclick="loadSample()">LOAD SAMPLE</button>
-        <button class="secondary" onclick="clearAll()">CLEAR</button>
+        <p class="eyebrow">SECURITY OPERATIONS CENTER</p>
+        <h1>Security Log Triage <span>&amp; Incident Response</span></h1>
+        <p class="hero-copy">Review suspicious log entries, understand risk indicators, and follow a structured response checklist.</p>
       </div>
+      <div class="hero-icon" aria-hidden="true">⌁</div>
+    </section>
 
-      <p class="small">
-        Analysis happens locally in this browser. No server-side
-        security monitoring is performed.
-      </p>
-    </div>
+    <div class="notice"><strong>⚠ Heuristic triage only.</strong> Results are indicators, not proof of compromise. This dashboard runs in your browser and does not upload log text.</div>
 
-    <div class="card">
-      <h2>🚨 Analysis Results</h2>
-      <div id="risk">NOT SCANNED</div>
-      <p id="summary">Load a sample or enter a log and run a scan.</p>
-      <div id="report">Your findings will appear here.</div>
-      <button class="primary" onclick="downloadReport()">DOWNLOAD REPORT</button>
-    </div>
+    <section class="metrics" aria-label="Scan metrics">
+      <article class="metric"><span class="metric-label">ASSESSED RISK</span><strong id="riskMetric" class="metric-value neutral">—</strong><small id="riskCaption">Waiting for scan</small></article>
+      <article class="metric"><span class="metric-label">PARSED LINES</span><strong id="lineMetric" class="metric-value">0</strong><small>Non-empty log lines</small></article>
+      <article class="metric"><span class="metric-label">FLAGGED INDICATORS</span><strong id="flagMetric" class="metric-value">0</strong><small>Heuristic matches</small></article>
+    </section>
 
-    <div class="card checklist">
-      <h2>📋 Incident Response Checklist</h2>
-      <p>Track your review steps manually.</p>
+    <section class="work-grid">
+      <article class="panel log-panel">
+        <div class="panel-heading"><div><p class="eyebrow">01 / INPUT</p><h2>Security Log Analyzer</h2></div><span class="panel-icon">⌘</span></div>
+        <label for="logInput">Paste log entries</label>
+        <textarea id="logInput" spellcheck="false" placeholder="Paste sample or system log lines here..."></textarea>
+        <div class="preset-row">
+          <label for="presetSelect" class="small-label">Load sample</label>
+          <select id="presetSelect">
+            <option value="">Choose a sample…</option>
+            <option value="bruteForce">Repeated failed logins</option>
+            <option value="sqli">SQL injection indicator</option>
+            <option value="traversal">Path traversal indicator</option>
+            <option value="xss">Cross-site scripting indicator</option>
+            <option value="clean">Routine activity (clean)</option>
+          </select>
+        </div>
+        <div class="button-row">
+          <button id="scanBtn" class="btn btn-primary">▶ Run Heuristic Scan</button>
+          <button id="clearBtn" class="btn btn-secondary">Clear</button>
+          <button id="exportBtn" class="btn btn-outline">↓ Export TXT Report</button>
+        </div>
+        <p class="microcopy">Analysis is performed locally in this browser tab. Avoid pasting secrets or personal data.</p>
+      </article>
 
-      <label><input type="checkbox"> Identification — review the alert and logs</label>
-      <label><input type="checkbox"> Analysis — validate suspicious indicators</label>
-      <label><input type="checkbox"> Containment — recommend appropriate action</label>
-      <label><input type="checkbox"> Eradication — investigate the confirmed cause</label>
-      <label><input type="checkbox"> Recovery — verify authorized recovery steps</label>
-      <label><input type="checkbox"> Lessons learned — document findings</label>
-    </div>
+      <article class="panel results-panel">
+        <div class="panel-heading"><div><p class="eyebrow">02 / FINDINGS</p><h2>Analysis Results</h2></div><span class="panel-icon">◎</span></div>
+        <div id="emptyState" class="empty-state"><span class="empty-symbol">⌕</span><h3>No scan yet</h3><p>Paste logs or load a sample, then run the heuristic scan.</p></div>
+        <div id="results" class="results hidden" aria-live="polite"></div>
+      </article>
+    </section>
 
-    <div class="card">
-      <h2>ℹ️ About This Scanner</h2>
-      <p>
-        CyberSentinel AI is a beginner-friendly, rule-based
-        security log triage demonstration.
-      </p>
-      <p>
-        <strong>Important:</strong> A detected text pattern does not
-        prove an attack. A LOW result does not prove a system is safe.
-        Review findings before taking action.
-      </p>
-      <p class="small">
-        This demo does not access computer logs automatically,
-        monitor networks, or block users or traffic.
-      </p>
-    </div>
-  </section>
-</main>
+    <section class="panel response-panel">
+      <div class="panel-heading"><div><p class="eyebrow">03 / RESPONSE</p><h2>Incident Response Checklist</h2></div><span class="progress-text" id="progressText">0 of 8 complete</span></div>
+      <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+      <div class="checklist" id="checklist">
+        <label class="check-item"><input type="checkbox"><span><strong>Identification</strong><small>Record alert source, time, affected asset, and observed indicators.</small></span></label>
+        <label class="check-item"><input type="checkbox"><span><strong>Preserve evidence</strong><small>Keep original logs unchanged; record acquisition details and hashes where appropriate.</small></span></label>
+        <label class="check-item"><input type="checkbox"><span><strong>Validate scope</strong><small>Correlate with trusted logs and confirm whether the alert is a false positive.</small></span></label>
+        <label class="check-item"><input type="checkbox"><span><strong>Containment planning</strong><small>Recommend proportionate containment and obtain human approval before action.</small></span></label>
+        <label class="check-item"><input type="checkbox"><span><strong>Eradication review</strong><small>Identify likely root cause and plan remediation with an authorized responder.</small></span></label>
+        <label class="check-item"><input type="checkbox"><span><strong>Recovery verification</strong><small>Restore from trusted sources and verify systems are operating normally.</small></span></label>
+        <label class="check-item"><input type="checkbox"><span><strong>Document decisions</strong><small>Record actions, approvals, timestamps, evidence references, and outstanding questions.</small></span></label>
+        <label class="check-item"><input type="checkbox"><span><strong>Lessons learned</strong><small>Review detection gaps and identify prevention or monitoring improvements.</small></span></label>
+      </div>
+      <p class="microcopy">Checklist guidance is aligned at a high level with common incident-response lifecycle practices. It does not execute containment or modify devices.</p>
+    </section>
 
-<footer>
-  CyberSentinel AI · Educational Cybersecurity Project · Local Browser Demo
-</footer>
-
-<script src="app.js"></script>
-
+    <footer><span>CYBERSENTINEL AI</span><span>Local heuristic analysis · Human review required</span></footer>
+  </main>
+  <script src="app.js"></script>
 </body>
-</html> 
+</html>
