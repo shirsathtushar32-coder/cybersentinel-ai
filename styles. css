@@ -1,72 +1,201 @@
-/* CyberSentinel AI - Security Operations Dashboard */
+/* =========================================
+   CyberSentinel AI
+   Security Log Triage & IR Dashboard
+   Responsive Cyber Security Theme
+   ========================================= */
+
+/* 1. CSS VARIABLES */
 
 :root {
   --bg: #08111f;
   --panel: #111e30;
+  --panel-light: #17283d;
   --border: #263a50;
+
   --cyan: #22d3ee;
-  --text: #e5edf7;
-  --muted: #91a4ba;
+  --blue: #3b82f6;
   --green: #4ade80;
   --yellow: #facc15;
   --red: #fb7185;
+
+  --text: #e5edf7;
+  --muted: #94a3b8;
+
+  --radius: 14px;
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
 }
+
+/* 2. GLOBAL RESET */
 
 * {
   box-sizing: border-box;
 }
 
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: Arial, sans-serif;
+html {
+  scroll-behavior: smooth;
 }
 
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+}
+
+button,
+textarea,
+input,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:focus-visible,
+textarea:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 3px;
+}
+
+a {
+  color: var(--cyan);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* 3. HEADER */
+
 header {
-  padding: 22px 5%;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   flex-wrap: wrap;
-  gap: 12px;
-  border-bottom: 1px solid var(--border);
+  gap: 16px;
+
+  padding: 20px 5%;
+
   background: #0b1728;
+  border-bottom: 1px solid var(--border);
 }
 
 .logo {
   color: var(--cyan);
   font-size: 23px;
-  font-weight: bold;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  overflow-wrap: anywhere;
 }
 
-.badge {
-  border: 1px solid #17677b;
-  color: var(--cyan);
-  padding: 7px 11px;
-  border-radius: 20px;
-  font-size: 12px;
+header h1 {
+  margin: 0;
+  font-size: 22px;
 }
+
+header p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* 4. STATUS BADGE */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+
+  padding: 7px 12px;
+
+  color: var(--cyan);
+  background: rgba(34, 211, 238, 0.08);
+  border: 1px solid #176777;
+  border-radius: 20px;
+
+  font-size: 12px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+/* 5. MAIN CONTAINER */
 
 main {
   width: 92%;
-  max-width: 1150px;
-  margin: 30px auto;
+  max-width: 1200px;
+  margin: 32px auto 50px;
 }
+
+/* 6. HERO SECTION */
 
 .hero {
-  margin-bottom: 25px;
+  margin-bottom: 28px;
+  padding: 28px;
+
+  background:
+    radial-gradient(
+      circle at top right,
+      rgba(34, 211, 238, 0.10),
+      transparent 45%
+    ),
+    var(--panel);
+
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
 
-h1 {
-  font-size: 30px;
-  margin-bottom: 8px;
+.hero h1 {
+  margin: 0 0 12px;
+  color: var(--text);
+  font-size: clamp(25px, 4vw, 36px);
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.hero h2 {
+  margin: 0 0 10px;
+  font-size: 21px;
+}
+
+.hero p {
+  margin: 8px 0;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+/* 7. HEADINGS AND PARAGRAPHS */
+
+h2 {
+  margin-top: 0;
+  font-size: 21px;
+}
+
+h3 {
+  margin-top: 0;
+  font-size: 17px;
 }
 
 p {
   color: var(--muted);
-  line-height: 1.6;
+  line-height: 1.7;
 }
+
+.section-title {
+  margin: 30px 0 16px;
+  color: var(--text);
+  font-size: 21px;
+}
+
+/* 8. DASHBOARD GRID */
 
 .grid {
   display: grid;
@@ -74,134 +203,568 @@ p {
   gap: 18px;
 }
 
+.metrics,
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+/* 9. CARDS */
+
 .card {
+  min-width: 0;
+  padding: 22px;
+
   background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 22px;
-  min-width: 0;
+  border-radius: var(--radius);
+
+  box-shadow: var(--shadow);
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.card:hover {
+  border-color: #3b607b;
 }
 
 .card h2 {
-  font-size: 17px;
-  margin-top: 0;
+  margin: 0 0 12px;
+  font-size: 19px;
 }
 
-textarea {
-  width: 100%;
-  min-height: 180px;
-  resize: vertical;
-  background: #081321;
-  color: var(--text);
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  padding: 13px;
-  font: 14px/1.6 monospace;
+.card h3 {
+  margin-bottom: 10px;
 }
 
-button {
-  cursor: pointer;
-  border: 0;
-  border-radius: 8px;
-  padding: 11px 15px;
-  margin: 8px 5px 0 0;
-  font-weight: bold;
+.card p {
+  overflow-wrap: anywhere;
 }
 
-.primary {
-  background: var(--cyan);
-  color: #06121d;
+.card h2,
+.card h3 {
+  overflow-wrap: anywhere;
 }
 
-.secondary {
-  background: #263a50;
-  color: white;
-}
+/* 10. METRIC CARDS */
 
-button:hover {
-  opacity: 0.85;
-}
+.metric-card {
+  min-width: 0;
+  padding: 20px;
 
-.metrics {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin-bottom: 18px;
-}
-
-.metric {
   background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 18px;
-  min-width: 0;
+  border-radius: var(--radius);
 }
 
-.metric strong {
-  display: block;
-  font-size: 25px;
-  margin-top: 8px;
-}
-
-.small {
+.metric-card p,
+.metric-label {
+  margin: 0 0 8px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
 }
 
-#risk {
-  font-size: 23px;
-  font-weight: bold;
+.metric-card h2,
+.metric-value {
+  margin: 0;
   color: var(--cyan);
-  margin: 15px 0;
-}
-
-#report {
-  white-space: pre-wrap;
+  font-size: clamp(23px, 3vw, 32px);
+  font-weight: 800;
   overflow-wrap: anywhere;
-  font: 13px/1.7 monospace;
-  color: var(--green);
 }
 
-.checklist label {
-  display: block;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
-  line-height: 1.5;
-}
-
-.checklist input {
-  margin-right: 8px;
-}
-
-footer {
-  text-align: center;
-  padding: 25px;
-  color: var(--muted);
+.metric-card .description {
+  margin-top: 8px;
   font-size: 12px;
 }
 
-.low {
+/* 11. RISK LEVELS */
+
+.risk-low {
   color: var(--green);
 }
 
-.medium {
+.risk-medium {
   color: var(--yellow);
 }
 
-.high {
+.risk-high {
   color: var(--red);
 }
 
-@media (max-width: 700px) {
+.risk-badge {
+  display: inline-block;
+  padding: 5px 11px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.risk-badge.low {
+  color: var(--green);
+  background: rgba(74, 222, 128, 0.12);
+}
+
+.risk-badge.medium {
+  color: var(--yellow);
+  background: rgba(250, 204, 21, 0.12);
+}
+
+.risk-badge.high {
+  color: var(--red);
+  background: rgba(251, 113, 133, 0.12);
+}
+
+/* 12. TEXTAREA AND INPUTS */
+
+textarea {
+  display: block;
+  width: 100%;
+  min-height: 180px;
+  padding: 14px;
+
+  resize: vertical;
+
+  background: #081321;
+  color: var(--text);
+
+  border: 1px solid var(--border);
+  border-radius: 9px;
+
+  font-family: "Courier New", monospace;
+  font-size: 14px;
+  line-height: 1.7;
+
+  overflow-wrap: anywhere;
+}
+
+textarea::placeholder,
+input::placeholder {
+  color: #718198;
+}
+
+textarea:focus,
+input:focus,
+select:focus {
+  border-color: var(--cyan);
+}
+
+input,
+select {
+  max-width: 100%;
+  padding: 11px 13px;
+
+  color: var(--text);
+  background: #081321;
+
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+select {
+  width: 100%;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* 13. BUTTONS */
+
+button {
+  padding: 11px 18px;
+
+  color: var(--text);
+  background: var(--panel-light);
+
+  border: 1px solid var(--border);
+  border-radius: 9px;
+
+  font-size: 14px;
+  font-weight: 700;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+button:hover {
+  border-color: var(--cyan);
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+button.primary,
+button.primary-btn,
+#scanBtn,
+#runScan {
+  color: #04121c;
+  background: var(--cyan);
+  border-color: var(--cyan);
+}
+
+button.primary:hover,
+button.primary-btn:hover,
+#scanBtn:hover,
+#runScan:hover {
+  background: #67e8f9;
+}
+
+button.danger,
+#clearBtn {
+  color: var(--red);
+  background: rgba(251, 113, 133, 0.08);
+  border-color: rgba(251, 113, 133, 0.4);
+}
+
+button.danger:hover,
+#clearBtn:hover {
+  background: rgba(251, 113, 133, 0.16);
+}
+
+.button-group,
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+/* 14. ALERT AND NOTICE BOXES */
+
+.notice,
+.alert,
+.warning {
+  margin: 16px 0;
+  padding: 14px 16px;
+
+  background: rgba(34, 211, 238, 0.06);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--cyan);
+  border-radius: 8px;
+
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.warning {
+  background: rgba(250, 204, 21, 0.06);
+  border-left-color: var(--yellow);
+}
+
+.alert {
+  background: rgba(251, 113, 133, 0.06);
+  border-left-color: var(--red);
+}
+
+/* 15. RESULTS AND LOGS */
+
+#results,
+.results,
+#scanResults,
+#output {
+  margin-top: 20px;
+  overflow-wrap: anywhere;
+}
+
+pre,
+code,
+.log-entry {
+  font-family: "Courier New", monospace;
+}
+
+pre {
+  max-width: 100%;
+  padding: 15px;
+
+  color: var(--text);
+  background: #081321;
+
+  border: 1px solid var(--border);
+  border-radius: 9px;
+
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  overflow-x: auto;
+}
+
+.log-entry {
+  margin: 10px 0;
+  padding: 12px;
+
+  background: #0b1728;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+/* 16. PROGRESS BAR */
+
+.progress,
+.progress-container {
+  width: 100%;
+  height: 10px;
+  margin: 12px 0;
+
+  background: #26364a;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.progress-bar,
+.progress-fill {
+  width: 0;
+  height: 100%;
+
+  background: var(--cyan);
+  border-radius: inherit;
+
+  transition: width 0.3s ease;
+}
+
+/* 17. CHECKLIST */
+
+.checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.checklist label,
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+
+  padding: 12px;
+
+  background: #0b1728;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.checklist input[type="checkbox"],
+input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  margin-top: 3px;
+  accent-color: var(--cyan);
+  flex-shrink: 0;
+}
+
+/* 18. TABLES */
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th,
+td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  overflow-wrap: anywhere;
+}
+
+th {
+  color: var(--cyan);
+  background: #0b1728;
+}
+
+tr:hover td {
+  background: rgba(34, 211, 238, 0.03);
+}
+
+/* 19. STATUS INDICATOR */
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--green);
+  font-size: 13px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--green);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* 20. FOOTER */
+
+footer {
+  padding: 24px 5%;
+  text-align: center;
+
+  color: var(--muted);
+  background: #0b1728;
+
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+}
+
+footer p {
+  margin: 5px 0;
+}
+
+/* 21. UTILITY CLASSES */
+
+.text-cyan {
+  color: var(--cyan);
+}
+
+.text-green {
+  color: var(--green);
+}
+
+.text-yellow {
+  color: var(--yellow);
+}
+
+.text-red {
+  color: var(--red);
+}
+
+.text-muted {
+  color: var(--muted);
+}
+
+.hidden {
+  display: none !important;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+/* 22. TABLET RESPONSIVENESS */
+
+@media (max-width: 768px) {
+  header {
+    padding: 18px 4%;
+  }
+
+  main {
+    width: 94%;
+    margin-top: 22px;
+  }
+
+  .hero {
+    padding: 22px;
+  }
+
   .grid {
     grid-template-columns: 1fr;
   }
 
-  .metrics {
+  .metrics,
+  .metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .card {
+    padding: 18px;
+  }
+}
+
+/* 23. MOBILE RESPONSIVENESS */
+
+@media (max-width: 480px) {
+  header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+
+  main {
+    width: 92%;
+    margin-top: 18px;
+  }
+
+  .hero {
+    padding: 18px;
+  }
+
+  .hero h1 {
+    font-size: 26px;
+  }
+
+  .metrics,
+  .metric-grid {
     grid-template-columns: 1fr;
   }
 
-  h1 {
-    font-size: 25px;
+  .card {
+    padding: 16px;
+  }
+
+  textarea {
+    min-height: 160px;
+    font-size: 12px;
+  }
+
+  .button-group,
+  .actions {
+    flex-direction: column;
+  }
+
+  .button-group button,
+  .actions button {
+    width: 100%;
+  }
+
+  th,
+  td {
+    padding: 9px;
+  }
+}
+
+/* 24. REDUCED MOTION */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
   }
 }
