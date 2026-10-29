@@ -3,83 +3,146 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#08111f">
-  <title>CyberSentinel // Security Log Triage & IR Dashboard</title>
+  <meta name="theme-color" content="#07111f">
+  <meta name="description" content="CyberSentinel AI — local-first security log triage and incident response dashboard.">
+  <title>CyberSentinel AI | Security Operations</title>
   <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="#" aria-label="CyberSentinel home"><span class="brand-mark">C</span><span>CyberSentinel<span class="brand-ai"> AI</span></span></a>
-    <div class="top-meta"><span class="pill"><span class="dot"></span> 100% LOCAL / ZERO EXFILTRATION</span><span class="version">HEURISTIC v2.0</span></div>
-  </header>
-
-  <main class="container">
-    <section class="hero">
-      <div>
-        <p class="eyebrow">SECURITY OPERATIONS CENTER</p>
-        <h1>Security Log Triage <span>&amp; Incident Response</span></h1>
-        <p class="hero-copy">Review suspicious log entries, understand risk indicators, and follow a structured response checklist.</p>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#home" aria-label="CyberSentinel home">
+        <span class="brand-mark">CS</span>
+        <span><strong>CyberSentinel</strong><small>SECURITY OPERATIONS</small></span>
+      </a>
+      <div class="side-label">WORKSPACE</div>
+      <nav class="side-nav" aria-label="Main navigation">
+        <a href="#home" class="nav-link active" data-page="home"><span>⌂</span> Overview</a>
+        <a href="#dashboard" class="nav-link" data-page="dashboard"><span>▦</span> Dashboard</a>
+        <a href="#analyzer" class="nav-link" data-page="analyzer"><span>⌕</span> Log Analyzer</a>
+        <a href="#incidents" class="nav-link" data-page="incidents"><span>◈</span> Incident Response</a>
+        <a href="#reports" class="nav-link" data-page="reports"><span>▤</span> Reports & Evidence</a>
+      </nav>
+      <div class="side-label">INFORMATION</div>
+      <nav class="side-nav" aria-label="Information navigation">
+        <a href="#how-it-works" class="nav-link" data-page="how-it-works"><span>ⓘ</span> How it works</a>
+        <a href="#about" class="nav-link" data-page="about"><span>◎</span> About project</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="privacy-badge"><span class="pulse-dot"></span><div><strong>Local-first mode</strong><small>Logs stay in this browser</small></div></div>
+        <small class="sidebar-version">HEURISTIC ENGINE · v2.1</small>
       </div>
-      <div class="hero-icon" aria-hidden="true">⌁</div>
-    </section>
+    </aside>
 
-    <div class="notice"><strong>⚠ Heuristic triage only.</strong> Results are indicators, not proof of compromise. This dashboard runs in your browser and does not upload log text.</div>
+    <main class="main-area">
+      <header class="topbar">
+        <button class="icon-button menu-button" id="menuButton" aria-label="Toggle menu">☰</button>
+        <div class="breadcrumb"><span>Workspace</span><b>/</b><strong id="pageTitle">Overview</strong></div>
+        <div class="topbar-right"><span class="status-pill"><i></i> SYSTEM READY</span><span class="avatar">CS</span></div>
+      </header>
 
-    <section class="metrics" aria-label="Scan metrics">
-      <article class="metric"><span class="metric-label">ASSESSED RISK</span><strong id="riskMetric" class="metric-value neutral">—</strong><small id="riskCaption">Waiting for scan</small></article>
-      <article class="metric"><span class="metric-label">PARSED LINES</span><strong id="lineMetric" class="metric-value">0</strong><small>Non-empty log lines</small></article>
-      <article class="metric"><span class="metric-label">FLAGGED INDICATORS</span><strong id="flagMetric" class="metric-value">0</strong><small>Heuristic matches</small></article>
-    </section>
+      <div class="content">
+        <section class="page active" id="page-home" data-title="Overview">
+          <div class="hero panel">
+            <div class="hero-copy">
+              <div class="eyebrow"><span class="pulse-dot"></span> SECURITY LOG TRIAGE & INCIDENT RESPONSE</div>
+              <h1>See the signal.<br><span>Respond with confidence.</span></h1>
+              <p>Review suspicious security logs, understand the indicators, and track response actions in one focused workspace.</p>
+              <div class="hero-actions"><button class="button primary" data-go="analyzer">Open Log Analyzer <span>→</span></button><button class="button secondary" data-go="dashboard">View Dashboard</button></div>
+              <div class="hero-foot"><span>✓ Browser-based analysis</span><span>✓ Explainable rules</span><span>✓ Human-led response</span></div>
+            </div>
+            <div class="hero-visual" aria-hidden="true"><div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="shield"><span>⌑</span><i>CS</i></div><div class="orbit-node node-one">LOGS</div><div class="orbit-node node-two">IR</div><div class="orbit-node node-three">RISK</div></div>
+          </div>
+          <div class="section-heading"><div><span class="eyebrow">WORKSPACE SNAPSHOT</span><h2>Security at a glance</h2></div><button class="text-button" data-go="dashboard">Full dashboard →</button></div>
+          <div class="metric-grid">
+            <article class="metric-card"><div class="metric-top"><span>Last assessed risk</span><span class="metric-icon">◈</span></div><strong id="homeRisk">—</strong><small id="homeRiskNote">Run a scan to assess logs</small><div class="mini-track"><i id="homeRiskBar"></i></div></article>
+            <article class="metric-card"><div class="metric-top"><span>Lines analyzed</span><span class="metric-icon">≡</span></div><strong id="homeLines">0</strong><small>In the latest scan</small><div class="metric-bottom">LOCAL LOG TRIAGE</div></article>
+            <article class="metric-card"><div class="metric-top"><span>Indicators flagged</span><span class="metric-icon">⌁</span></div><strong id="homeFlags">0</strong><small>Rule matches in latest scan</small><div class="metric-bottom">EXPLAINABLE RESULTS</div></article>
+            <article class="metric-card"><div class="metric-top"><span>Response progress</span><span class="metric-icon">✓</span></div><strong id="homeProgress">0%</strong><small>Checklist completed</small><div class="mini-track"><i id="homeProgressBar"></i></div></article>
+          </div>
+          <div class="two-column">
+            <article class="panel inner-panel"><div class="panel-heading"><div><span class="eyebrow">QUICK START</span><h3>Start with a safe sample</h3></div><span class="tag">DEMO DATA</span></div><p class="muted">Load a sample log to see how rule-based triage highlights possible security events. No real system is accessed.</p><div class="sample-row"><div class="sample-symbol">⌁</div><div><strong>Brute-force login pattern</strong><small>Repeated failed authentication events</small></div><button class="button small secondary" id="quickSample">Load sample</button></div></article>
+            <article class="panel inner-panel"><div class="panel-heading"><div><span class="eyebrow">SAFETY BY DESIGN</span><h3>Human-led response</h3></div><span class="tag green">LOCAL</span></div><ul class="check-list"><li>Analysis uses transparent local rules.</li><li>No automatic account lockout or file deletion.</li><li>Findings are indicators, not proof of compromise.</li><li>Review results before taking action.</li></ul></article>
+          </div>
+          <div class="notice"><span>ⓘ</span><p><strong>Important:</strong> This is a heuristic triage tool for educational and defensive use. It does not connect to live devices, verify incidents, or replace a qualified security investigation.</p></div>
+        </section>
 
-    <section class="work-grid">
-      <article class="panel log-panel">
-        <div class="panel-heading"><div><p class="eyebrow">01 / INPUT</p><h2>Security Log Analyzer</h2></div><span class="panel-icon">⌘</span></div>
-        <label for="logInput">Paste log entries</label>
-        <textarea id="logInput" spellcheck="false" placeholder="Paste sample or system log lines here..."></textarea>
-        <div class="preset-row">
-          <label for="presetSelect" class="small-label">Load sample</label>
-          <select id="presetSelect">
-            <option value="">Choose a sample…</option>
-            <option value="bruteForce">Repeated failed logins</option>
-            <option value="sqli">SQL injection indicator</option>
-            <option value="traversal">Path traversal indicator</option>
-            <option value="xss">Cross-site scripting indicator</option>
-            <option value="clean">Routine activity (clean)</option>
-          </select>
-        </div>
-        <div class="button-row">
-          <button id="scanBtn" class="btn btn-primary">▶ Run Heuristic Scan</button>
-          <button id="clearBtn" class="btn btn-secondary">Clear</button>
-          <button id="exportBtn" class="btn btn-outline">↓ Export TXT Report</button>
-        </div>
-        <p class="microcopy">Analysis is performed locally in this browser tab. Avoid pasting secrets or personal data.</p>
-      </article>
+        <section class="page" id="page-dashboard" data-title="Dashboard">
+          <div class="page-intro"><div><span class="eyebrow">MONITORING WORKSPACE</span><h1>Security dashboard</h1><p>Review the latest local scan and its summarized indicators.</p></div><button class="button primary" data-go="analyzer">Run a scan →</button></div>
+          <div class="metric-grid">
+            <article class="metric-card"><div class="metric-top"><span>Assessed risk</span><span class="metric-icon">◈</span></div><strong id="dashRisk">—</strong><small id="dashRiskNote">No scan yet</small><div class="mini-track"><i id="dashRiskBar"></i></div></article>
+            <article class="metric-card"><div class="metric-top"><span>Parsed lines</span><span class="metric-icon">≡</span></div><strong id="dashLines">0</strong><small>Latest input</small><div class="metric-bottom">LOG VOLUME</div></article>
+            <article class="metric-card"><div class="metric-top"><span>Flagged indicators</span><span class="metric-icon">⌁</span></div><strong id="dashFlags">0</strong><small>Matched rules</small><div class="metric-bottom">POTENTIAL SIGNALS</div></article>
+            <article class="metric-card"><div class="metric-top"><span>Checklist progress</span><span class="metric-icon">✓</span></div><strong id="dashProgress">0%</strong><small>Response tasks checked</small><div class="mini-track"><i id="dashProgressBar"></i></div></article>
+          </div>
+          <div class="two-column dashboard-columns">
+            <article class="panel inner-panel"><div class="panel-heading"><div><span class="eyebrow">RISK DISTRIBUTION</span><h3>Latest scan summary</h3></div></div><div class="risk-summary"><div class="risk-ring" id="riskRing"><span><strong id="ringScore">0</strong><small>RISK SCORE</small></span></div><div class="risk-legend"><div><i class="legend-high"></i><span>High</span><strong id="highCount">0</strong></div><div><i class="legend-medium"></i><span>Medium</span><strong id="mediumCount">0</strong></div><div><i class="legend-low"></i><span>Low</span><strong id="lowCount">0</strong></div></div></div></article>
+            <article class="panel inner-panel"><div class="panel-heading"><div><span class="eyebrow">LATEST ACTIVITY</span><h3>Scan activity</h3></div><span class="tag">THIS SESSION</span></div><div id="activityList" class="activity-list"><div class="empty-state compact">No scan activity yet. Open Log Analyzer to begin.</div></div></article>
+          </div>
+          <article class="panel inner-panel"><div class="panel-heading"><div><span class="eyebrow">RECENT FINDINGS</span><h3>Indicators from latest scan</h3></div><button class="text-button" data-go="reports">View report →</button></div><div class="table-wrap"><table><thead><tr><th>SEVERITY</th><th>INDICATOR</th><th>OBSERVATION</th><th>RULE</th></tr></thead><tbody id="dashboardFindings"><tr><td colspan="4" class="empty-cell">No findings yet. Run a sample scan.</td></tr></tbody></table></div></article>
+        </section>
 
-      <article class="panel results-panel">
-        <div class="panel-heading"><div><p class="eyebrow">02 / FINDINGS</p><h2>Analysis Results</h2></div><span class="panel-icon">◎</span></div>
-        <div id="emptyState" class="empty-state"><span class="empty-symbol">⌕</span><h3>No scan yet</h3><p>Paste logs or load a sample, then run the heuristic scan.</p></div>
-        <div id="results" class="results hidden" aria-live="polite"></div>
-      </article>
-    </section>
+        <section class="page" id="page-analyzer" data-title="Log Analyzer">
+          <div class="page-intro"><div><span class="eyebrow">DEFENSIVE LOG TRIAGE</span><h1>Log analyzer</h1><p>Paste a log excerpt or load a sample, then inspect explainable rule matches.</p></div><span class="tag cyan">HEURISTIC v2.1</span></div>
+          <div class="analyzer-layout">
+            <article class="panel inner-panel input-panel">
+              <div class="panel-heading"><div><span class="eyebrow">INPUT</span><h3>Security log input</h3></div><span class="tag">LOCAL ONLY</span></div>
+              <label for="sampleSelect">Sample scenario</label><select id="sampleSelect" class="field"><option value="">Choose a sample…</option><option value="bruteForce">Brute-force login pattern</option><option value="sqli">Possible SQL injection</option><option value="traversal">Path traversal indicator</option><option value="xss">Possible XSS attempt</option><option value="privilege">Privilege escalation indicator</option><option value="clean">Normal-looking activity</option></select>
+              <label for="logInput">Log lines</label><textarea id="logInput" class="field log-input" spellcheck="false" placeholder="Paste relevant security logs here…"></textarea>
+              <div class="field-help">Tip: use fictional or sanitized log data. Analysis runs in this browser tab.</div>
+              <div class="button-row"><button class="button secondary" id="clearButton">Clear</button><button class="button secondary" id="sampleButton">Load selected sample</button><button class="button primary" id="scanButton">▶ Run heuristic scan</button></div>
+              <div id="scanMessage" class="inline-message" role="status" aria-live="polite">Ready when you are. No logs have been analyzed.</div>
+            </article>
+            <aside class="panel inner-panel results-panel">
+              <div class="panel-heading"><div><span class="eyebrow">ASSESSMENT</span><h3>Risk overview</h3></div><span id="riskBadge" class="risk-badge neutral">NOT ASSESSED</span></div>
+              <div class="score-area"><div class="score-number" id="riskScore">—</div><div><strong id="riskTitle">Awaiting scan</strong><p id="riskExplanation" class="muted">Run a scan to see the heuristic risk score and rationale.</p></div></div>
+              <div class="score-track"><i id="scoreBar"></i></div>
+              <div class="result-stats"><div><span>Parsed lines</span><strong id="parsedLines">0</strong></div><div><span>Flagged indicators</span><strong id="flaggedCount">0</strong></div></div>
+              <div class="recommendation-box"><strong>Suggested next step</strong><p id="recommendationText">Review the log source and preserve relevant context before making decisions.</p></div>
+            </aside>
+          </div>
+          <article class="panel inner-panel findings-panel"><div class="panel-heading"><div><span class="eyebrow">EXPLAINABLE DETECTIONS</span><h3>Flagged indicators</h3></div><span id="findingTag" class="tag">0 MATCHES</span></div><div id="findingsList" class="findings-list"><div class="empty-state"><span>⌕</span><strong>No scan results yet</strong><p>Choose a sample or paste logs, then run a heuristic scan.</p></div></div></article>
+          <div class="notice"><span>ⓘ</span><p>Heuristic matches can produce false positives and false negatives. A match is not proof of an attack; validate it against trusted context and other evidence.</p></div>
+        </section>
 
-    <section class="panel response-panel">
-      <div class="panel-heading"><div><p class="eyebrow">03 / RESPONSE</p><h2>Incident Response Checklist</h2></div><span class="progress-text" id="progressText">0 of 8 complete</span></div>
-      <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
-      <div class="checklist" id="checklist">
-        <label class="check-item"><input type="checkbox"><span><strong>Identification</strong><small>Record alert source, time, affected asset, and observed indicators.</small></span></label>
-        <label class="check-item"><input type="checkbox"><span><strong>Preserve evidence</strong><small>Keep original logs unchanged; record acquisition details and hashes where appropriate.</small></span></label>
-        <label class="check-item"><input type="checkbox"><span><strong>Validate scope</strong><small>Correlate with trusted logs and confirm whether the alert is a false positive.</small></span></label>
-        <label class="check-item"><input type="checkbox"><span><strong>Containment planning</strong><small>Recommend proportionate containment and obtain human approval before action.</small></span></label>
-        <label class="check-item"><input type="checkbox"><span><strong>Eradication review</strong><small>Identify likely root cause and plan remediation with an authorized responder.</small></span></label>
-        <label class="check-item"><input type="checkbox"><span><strong>Recovery verification</strong><small>Restore from trusted sources and verify systems are operating normally.</small></span></label>
-        <label class="check-item"><input type="checkbox"><span><strong>Document decisions</strong><small>Record actions, approvals, timestamps, evidence references, and outstanding questions.</small></span></label>
-        <label class="check-item"><input type="checkbox"><span><strong>Lessons learned</strong><small>Review detection gaps and identify prevention or monitoring improvements.</small></span></label>
+        <section class="page" id="page-incidents" data-title="Incident Response">
+          <div class="page-intro"><div><span class="eyebrow">NIST-ALIGNED WORKFLOW</span><h1>Incident response</h1><p>Track investigation and recovery tasks. This checklist does not take action on systems.</p></div><button class="button secondary" id="resetChecklist">Reset checklist</button></div>
+          <div class="response-summary panel"><div><span class="eyebrow">RESPONSE READINESS</span><h2 id="responsePercent">0% complete</h2><p class="muted">Check items as you complete them in your investigation.</p></div><div class="response-progress"><div class="progress-track"><i id="responseBar"></i></div><small id="responseCount">0 of 12 tasks complete</small></div></div>
+          <div class="phase-grid" id="phaseGrid"></div>
+          <article class="panel inner-panel incident-notes"><div class="panel-heading"><div><span class="eyebrow">CASE NOTES</span><h3>Investigation notes</h3></div><span class="tag">THIS BROWSER</span></div><label for="caseId">Case / incident reference</label><input id="caseId" class="field" maxlength="100" placeholder="e.g. CASE-2026-001"><label for="caseNotes">Notes and evidence context</label><textarea id="caseNotes" class="field notes-input" maxlength="5000" placeholder="Record timestamps, log source, preservation steps, and validation still required…"></textarea><div class="button-row"><button class="button secondary" id="saveNotes">Save notes locally</button><span id="notesStatus" class="muted small-text">Notes are not sent to a server.</span></div></article>
+        </section>
+
+        <section class="page" id="page-reports" data-title="Reports & Evidence">
+          <div class="page-intro"><div><span class="eyebrow">DOCUMENTATION</span><h1>Reports & evidence</h1><p>Generate a text summary from the latest scan and record evidence notes.</p></div><button class="button primary" id="exportReport">↓ Export TXT report</button></div>
+          <div class="two-column">
+            <article class="panel inner-panel"><div class="panel-heading"><div><span class="eyebrow">SCAN REPORT</span><h3>Latest assessment</h3></div><span class="tag">GENERATED LOCALLY</span></div><div id="reportSummary" class="report-summary"><div class="empty-state compact">Run a scan in Log Analyzer to populate the report.</div></div></article>
+            <article class="panel inner-panel"><div class="panel-heading"><div><span class="eyebrow">EVIDENCE REGISTER</span><h3>Evidence notes</h3></div></div><label for="evidenceLabel">Evidence item label</label><input id="evidenceLabel" class="field" maxlength="100" placeholder="e.g. Web server log excerpt"><label for="evidenceDetails">Description / source / hash if known</label><textarea id="evidenceDetails" class="field notes-input" maxlength="2000" placeholder="Document where it came from, when collected, and integrity checks performed…"></textarea><button class="button secondary" id="addEvidence">+ Add evidence note</button><div id="evidenceList" class="evidence-list"><div class="empty-state compact">No evidence notes added.</div></div></article>
+          </div>
+          <div class="notice"><span>ⓘ</span><p>Evidence notes are not a chain-of-custody system. Preserve original evidence with approved forensic procedures; do not alter source files.</p></div>
+        </section>
+
+        <section class="page" id="page-how-it-works" data-title="How it works">
+          <div class="page-intro"><div><span class="eyebrow">TRANSPARENT BY DESIGN</span><h1>How it works</h1><p>A simple guide to the workflow and the limits of the current prototype.</p></div></div>
+          <div class="feature-grid">
+            <article class="panel feature-card"><span class="feature-icon">01</span><h3>Provide log text</h3><p>Paste a relevant excerpt or use fictional demo samples. The app reads the text you provide.</p></article>
+            <article class="panel feature-card"><span class="feature-icon">02</span><h3>Match local rules</h3><p>Transparent pattern checks look for common indicators such as repeated failures, suspicious query strings, and traversal patterns.</p></article>
+            <article class="panel feature-card"><span class="feature-icon">03</span><h3>Review risk estimate</h3><p>Matched indicators contribute to a weighted score. This estimate is a triage aid, not a validated probability.</p></article>
+            <article class="panel feature-card"><span class="feature-icon">04</span><h3>Document response</h3><p>Track a checklist, write case notes, and export a plain-text summary for further review.</p></article>
+          </div>
+          <article class="panel inner-panel"><div class="panel-heading"><div><span class="eyebrow">CURRENT LIMITATIONS</span><h3>What this prototype does not do</h3></div></div><ul class="check-list"><li>Does not monitor a computer or network live.</li><li>Does not contact an AI service or external API.</li><li>Does not authenticate users or store cases in a shared database.</li><li>Does not automatically block accounts, delete files, or isolate devices.</li><li>Does not prove that an incident occurred.</li></ul></article>
+        </section>
+
+        <section class="page" id="page-about" data-title="About project">
+          <div class="page-intro"><div><span class="eyebrow">PROJECT PROFILE</span><h1>About CyberSentinel AI</h1><p>An educational, browser-based prototype for security log triage and incident response workflow practice.</p></div><span class="tag cyan">STUDENT PROJECT</span></div>
+          <div class="about-hero panel"><div class="brand-mark large">CS</div><div><h2>CyberSentinel AI</h2><p>Security Log Triage & Incident Response Dashboard</p><div class="hero-foot"><span>Local-first</span><span>Explainable rules</span><span>Human approval</span></div></div></div>
+          <div class="two-column"><article class="panel inner-panel"><h3>Project objectives</h3><ul class="check-list"><li>Practice interpreting suspicious log patterns.</li><li>Summarize findings and risk indicators.</li><li>Support structured incident response learning.</li><li>Document observations and evidence context.</li></ul></article><article class="panel inner-panel"><h3>Privacy & responsible use</h3><p class="muted">This version performs analysis in the browser and contains no remote log-upload feature. Use sanitized examples where possible. Browser storage is not encrypted and may be cleared by the browser, so do not enter secrets or sensitive production data.</p></article></div>
+        </section>
+
+        <footer class="footer"><span>© <span id="year"></span> CyberSentinel AI · Educational prototype</span><span><i class="pulse-dot"></i> Local-first · Human-led response</span></footer>
       </div>
-      <p class="microcopy">Checklist guidance is aligned at a high level with common incident-response lifecycle practices. It does not execute containment or modify devices.</p>
-    </section>
-
-    <footer><span>CYBERSENTINEL AI</span><span>Local heuristic analysis · Human review required</span></footer>
-  </main>
-  <script src="app.js"></script>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 </body>
 </html>
