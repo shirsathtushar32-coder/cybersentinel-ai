@@ -11,7 +11,15 @@
     clean: `2026-10-29T09:00:01Z auth success user=analyst src=192.0.2.10\n2026-10-29T09:03:12Z GET /health HTTP/1.1 200\n2026-10-29T09:05:20Z backup completed status=success`
   };
   const rules = [
-    {id:regex:/(auth(?:entication)?\s+(?:failure|failed)|login\s+failed|failed\s+login|failed\s+login\s+attempt|invalid password)/ig
+    {
+  id: "AUTH-01",
+  name: "Repeated authentication failures",
+  severity: "High",
+  weight: 35,
+  regex: /(auth(?:entication)?\s+(?:failure|failed)|login\s+failed|failed\s+login|failed\s+login\s+attempt|invalid password)/ig,
+  explain: "Multiple authentication-failure messages may indicate password guessing. Confirm counts, time window, and source attribution.",
+  recommend: "Validate the source and time window, correlate identity-provider logs, and follow your approved account-protection process."
+},
     {id:"WEB-01",name:"Possible SQL injection pattern",severity:"High",weight:35,regex:/(union\s+select|'\s*(or|and)\s*['"]?\d+['"]?\s*=\s*['"]?\d+|sql\s*injection|information_schema)/ig,explain:"A query-string or log message contains patterns commonly associated with SQL injection. Benign test traffic and encoded input can also match.",recommend:"Review the request and application/WAF logs, verify parameterized queries, and preserve relevant request context."},
     {id:"WEB-02",name:"Path traversal indicator",severity:"High",weight:30,regex:/(?:\.\.\/|%2e%2e(?:%2f|\/)|\.\.\\\\|\/etc\/passwd)/ig,explain:"A path contains traversal-like segments or a sensitive file path. Confirm decoding, route handling, and the server response.",recommend:"Check the affected route, web-server access logs, and file-access evidence. Verify path normalization and access controls."},
     {id:"WEB-03",name:"Possible cross-site scripting pattern",severity:"Medium",weight:22,regex:/(<script\b|%3cscript|javascript\s*:|onerror\s*=|cross-site scripting|xss payload)/ig,explain:"Input or a log message contains a script-like pattern. This may be a probe, a blocked request, or harmless test data.",recommend:"Inspect request/response context, output encoding, content-security policy, and WAF events."},
